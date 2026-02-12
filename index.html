@@ -42,13 +42,7 @@ body {
   align-items: center;
 }
 
-.clear-cache {
-  font-size: 12px;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.produtos-btn {
+.clear-cache, .produtos-btn {
   font-size: 12px;
   cursor: pointer;
   opacity: 0.8;
@@ -108,9 +102,7 @@ input {
   box-shadow: 0 0 10px #225678;
 }
 
-.card.opaca {
-  opacity: 0.45;
-}
+.card.opaca { opacity: 0.45; }
 
 .parcela { font-size: 17px; font-weight: 600; }
 .total { font-size: 11px; opacity: 0.7; }
@@ -123,15 +115,30 @@ input {
   margin: 10px 0;
 }
 
+/* PRODUTOS */
+
 .produto-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: rgba(15,23,42,0.95);
+  padding: 12px;
+  border-radius: 12px;
   margin-bottom: 10px;
 }
 
-.produto-nome {
-  font-size: 13px;
+.produto-header {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.produto-desc {
+  font-size: 11px;
+  opacity: 0.6;
+  margin: 4px 0 8px 0;
+}
+
+.produto-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .qtd-controls {
@@ -170,13 +177,7 @@ input {
 
     <h1>Simulação</h1>
 
-    <input 
-      type="text" 
-      id="valor" 
-      placeholder="R$ 0,00"
-      inputmode="numeric"
-      autocomplete="off"
-    />
+    <input type="text" id="valor" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"/>
 
     <div class="button-group">
       <button id="modoBtn" class="toggle-btn">Card</button>
@@ -184,193 +185,160 @@ input {
     </div>
 
     <div id="resultado"></div>
-    <div id="verTodas" class="ver-todas" style="display:none;">
-      Ver todas parcelas
-    </div>
+    <div id="verTodas" class="ver-todas" style="display:none;">Ver todas parcelas</div>
 
     <div id="produtosArea" style="display:none;"></div>
 
   </div>
 </div>
 
-<!-- ARQUIVOS EXTERNOS -->
 <script src="taxas.js"></script>
 <script src="produtos.js"></script>
 
 <script>
+if (typeof taxas === "undefined") taxas = {};
+if (typeof coeficientesConsignado === "undefined") coeficientesConsignado = {};
+if (typeof produtos === "undefined") produtos = [];
+
 let modoSimulacao = "cartao";
 let txEspecialAtiva = false;
 let mostrarTodas = false;
+let carrinho = {};
 
 const input = document.getElementById("valor");
 const resultadoDiv = document.getElementById("resultado");
 const produtosArea = document.getElementById("produtosArea");
-const produtosBtn = document.getElementById("produtosBtn");
-const txBtn = document.getElementById("txespecBtn");
-const modoBtn = document.getElementById("modoBtn");
-const verTodasBtn = document.getElementById("verTodas");
 
-let carrinho = {};
+function arredondarParaCima(v){ return Math.ceil(v*100)/100; }
+function formatarMoeda(v){ return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}); }
+function limparNumero(v){ return parseFloat(v.replace(/\D/g,""))/100; }
 
-function arredondarParaCima(valor) {
-  return Math.ceil(valor * 100) / 100;
-}
+/* PRODUTOS */
 
-function formatarMoeda(valor) {
-  return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-function limparNumero(valor) {
-  return parseFloat(valor.replace(/\D/g, "")) / 100;
-}
-
-/* ================= PRODUTOS ================= */
-
-produtosBtn.addEventListener("click", () => {
-  produtosArea.style.display =
-    produtosArea.style.display === "none" ? "block" : "none";
+document.getElementById("produtosBtn").addEventListener("click",()=>{
+  produtosArea.style.display = produtosArea.style.display==="none"?"block":"none";
   renderProdutos();
 });
 
-function renderProdutos() {
-  produtosArea.innerHTML = "";
+function renderProdutos(){
+  produtosArea.innerHTML="";
+  produtos.forEach(p=>{
+    if(!carrinho[p.nome]) carrinho[p.nome]=0;
 
-  produtos.forEach(prod => {
-    if (!carrinho[prod.nome]) carrinho[prod.nome] = 0;
-
-    produtosArea.innerHTML += `
+    produtosArea.innerHTML+=`
       <div class="produto-item">
-        <div class="produto-nome">${prod.nome} - ${formatarMoeda(prod.valor)}</div>
-        <div class="qtd-controls">
-          <button class="qtd-btn" onclick="alterarQtd('${prod.nome}', -1)">-</button>
-          <div class="qtd-num">${carrinho[prod.nome]}</div>
-          <button class="qtd-btn" onclick="alterarQtd('${prod.nome}', 1)">+</button>
+        <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
+        <div class="produto-desc">${p.descricao || ""}</div>
+        <div class="produto-footer">
+          <div class="qtd-controls">
+            <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
+            <div class="qtd-num">${carrinho[p.nome]}</div>
+            <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
+          </div>
         </div>
       </div>
     `;
   });
 }
 
-window.alterarQtd = function(nome, delta) {
-  carrinho[nome] += delta;
-  if (carrinho[nome] < 0) carrinho[nome] = 0;
-
-  atualizarTotalProdutos();
+window.alterarQtd=function(nome,delta){
+  carrinho[nome]+=delta;
+  if(carrinho[nome]<0)carrinho[nome]=0;
+  atualizarTotal();
   renderProdutos();
 };
 
-function atualizarTotalProdutos() {
-  let total = 0;
-
-  produtos.forEach(prod => {
-    total += prod.valor * carrinho[prod.nome];
-  });
-
-  if (total > 0) {
-    input.value = formatarMoeda(total);
+function atualizarTotal(){
+  let total=0;
+  produtos.forEach(p=> total+=p.valor*(carrinho[p.nome]||0));
+  if(total>0){
+    input.value=formatarMoeda(total);
     calcular(total);
-  } else {
-    input.value = "";
-    resultadoDiv.innerHTML = "";
+  }else{
+    input.value="";
+    resultadoDiv.innerHTML="";
   }
 }
 
-/* ================= SIMULAÇÃO ================= */
+/* SIMULAÇÃO (mesma lógica original) */
 
-txBtn.addEventListener("click", () => {
-  txEspecialAtiva = !txEspecialAtiva;
-  txBtn.classList.toggle("ativo");
+document.getElementById("modoBtn").addEventListener("click",()=>{
+  modoSimulacao=modoSimulacao==="cartao"?"consignado":"cartao";
+  document.getElementById("modoBtn").textContent=modoSimulacao==="cartao"?"Card":"Plano Especial";
+  document.getElementById("txespecBtn").style.display=modoSimulacao==="cartao"?"block":"none";
   calcularAtual();
 });
 
-modoBtn.addEventListener("click", () => {
-  modoSimulacao = modoSimulacao === "cartao" ? "consignado" : "cartao";
-  modoBtn.textContent = modoSimulacao === "cartao" ? "Card" : "Plano Especial";
-  txBtn.style.display = modoSimulacao === "cartao" ? "block" : "none";
+document.getElementById("txespecBtn").addEventListener("click",()=>{
+  txEspecialAtiva=!txEspecialAtiva;
+  document.getElementById("txespecBtn").classList.toggle("ativo");
   calcularAtual();
 });
 
-verTodasBtn.addEventListener("click", () => {
-  mostrarTodas = !mostrarTodas;
-  verTodasBtn.textContent = mostrarTodas ? "Mostrar menos" : "Ver todas parcelas";
+document.getElementById("verTodas").addEventListener("click",()=>{
+  mostrarTodas=!mostrarTodas;
+  document.getElementById("verTodas").textContent=mostrarTodas?"Mostrar menos":"Ver todas parcelas";
   calcularAtual();
 });
 
-input.addEventListener("input", (e) => {
-  let numero = limparNumero(e.target.value);
-  if (!numero) {
-    resultadoDiv.innerHTML = "";
-    input.value = "";
-    return;
-  }
-  input.value = formatarMoeda(numero);
-  calcular(numero);
+input.addEventListener("input",e=>{
+  let n=limparNumero(e.target.value);
+  if(!n){resultadoDiv.innerHTML="";input.value="";return;}
+  input.value=formatarMoeda(n);
+  calcular(n);
 });
 
-function calcularAtual() {
-  const valor = limparNumero(input.value);
-  if (valor) calcular(valor);
+function calcularAtual(){
+  const v=limparNumero(input.value);
+  if(v)calcular(v);
 }
 
-function calcular(valor) {
-  resultadoDiv.innerHTML = "";
+function calcular(valor){
+  resultadoDiv.innerHTML="";
 
-  if (modoSimulacao === "cartao") {
+  if(modoSimulacao==="cartao"){
+    for(let n=1;n<=18;n++){
+      let taxa=taxas[n]||0;
+      if(txEspecialAtiva && n<=3)taxa=0;
 
-    for (let n = 1; n <= 18; n++) {
+      const valorCorrigido=valor/(1-taxa);
+      const parcela=arredondarParaCima(valorCorrigido/n);
+      const totalFinal=arredondarParaCima(parcela*n);
 
-      let taxa = taxas[n] || 0;
-      if (txEspecialAtiva && n <= 3) taxa = 0;
+      if(n>12 && !mostrarTodas)continue;
 
-      const valorCorrigido = valor / (1 - taxa);
-      const parcela = arredondarParaCima(valorCorrigido / n);
-      const totalFinal = arredondarParaCima(parcela * n);
+      let classes="card";
+      if(n<=3)classes+=" destacada";
+      if(n>12)classes+=" opaca";
 
-      let classes = "card";
-      if (n <= 3) classes += " destacada";
-      if (n > 12 && !mostrarTodas) continue;
-      if (n > 12) classes += " opaca";
-
-      resultadoDiv.innerHTML += `
+      resultadoDiv.innerHTML+=`
         <div class="${classes}">
           <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
           <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-        </div>
-      `;
+        </div>`;
     }
-
-    verTodasBtn.style.display = "block";
-
-  } else {
-
-    verTodasBtn.style.display = "none";
-
-    Object.keys(coeficientesConsignado)
-      .sort((a,b)=>a-b)
-      .forEach(n => {
-
-        const coef = coeficientesConsignado[n];
-        const parcela = arredondarParaCima(valor * coef);
-        const totalFinal = arredondarParaCima(parcela * n);
-
-        resultadoDiv.innerHTML += `
-          <div class="card">
-            <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-            <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-          </div>
-        `;
-      });
+    document.getElementById("verTodas").style.display="block";
+  }else{
+    document.getElementById("verTodas").style.display="none";
+    Object.keys(coeficientesConsignado).sort((a,b)=>a-b).forEach(n=>{
+      const coef=coeficientesConsignado[n];
+      const parcela=arredondarParaCima(valor*coef);
+      const totalFinal=arredondarParaCima(parcela*n);
+      resultadoDiv.innerHTML+=`
+        <div class="card">
+          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+        </div>`;
+    });
   }
 }
 
-/* ================= CACHE ================= */
+/* CACHE */
 
-document.getElementById("clearCacheBtn").addEventListener("click", async () => {
-  if ("caches" in window) {
-    const keys = await caches.keys();
-    for (let key of keys) {
-      await caches.delete(key);
-    }
+document.getElementById("clearCacheBtn").addEventListener("click",async()=>{
+  if("caches"in window){
+    const keys=await caches.keys();
+    for(let key of keys){await caches.delete(key);}
   }
   localStorage.clear();
   sessionStorage.clear();
@@ -378,7 +346,7 @@ document.getElementById("clearCacheBtn").addEventListener("click", async () => {
   location.reload(true);
 });
 
-if ("serviceWorker" in navigator) {
+if("serviceWorker"in navigator){
   navigator.serviceWorker.register("service-worker.js");
 }
 </script>
