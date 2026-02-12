@@ -28,12 +28,12 @@ body {
 }
 
 .app-card {
-  position: relative;
   backdrop-filter: blur(14px);
   background: rgba(30, 41, 59, 0.65);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  position: relative;
 }
 
 .top-bar {
@@ -42,7 +42,7 @@ body {
   align-items: center;
 }
 
-.clear-cache, .produtos-btn {
+.clear-cache, .produtos-btn, .voltar-btn, .limpar-btn {
   font-size: 12px;
   cursor: pointer;
   opacity: 0.8;
@@ -115,7 +115,15 @@ input {
   margin: 10px 0;
 }
 
-/* PRODUTOS */
+/* TELA PRODUTOS */
+
+.tela {
+  display: none;
+}
+
+.tela.ativa {
+  display: block;
+}
 
 .produto-item {
   background: rgba(15,23,42,0.95);
@@ -170,24 +178,41 @@ input {
 <div class="container">
   <div class="app-card">
 
-    <div class="top-bar">
-      <div class="produtos-btn" id="produtosBtn">Produtos</div>
-      <div class="clear-cache" id="clearCacheBtn">↻</div>
+    <!-- TELA SIMULADOR -->
+    <div id="telaSimulador" class="tela ativa">
+
+      <div class="top-bar">
+        <div class="produtos-btn" id="abrirProdutos">Produtos</div>
+        <div class="clear-cache" id="clearCacheBtn">↻</div>
+      </div>
+
+      <h1>Simulação</h1>
+
+      <input type="text" id="valor" placeholder="R$ 0,00" inputmode="numeric"/>
+
+      <div class="button-group">
+        <button id="modoBtn" class="toggle-btn">Card</button>
+        <button id="txespecBtn" class="toggle-btn">Tx Especial</button>
+      </div>
+
+      <div id="resultado"></div>
+      <div id="verTodas" class="ver-todas" style="display:none;">Ver todas parcelas</div>
+
     </div>
 
-    <h1>Simulação</h1>
+    <!-- TELA PRODUTOS -->
+    <div id="telaProdutos" class="tela">
 
-    <input type="text" id="valor" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"/>
+      <div class="top-bar">
+        <div class="voltar-btn" id="voltarSimulador">← Voltar</div>
+        <div class="limpar-btn" id="limparCarrinho">Limpar Carrinho</div>
+      </div>
 
-    <div class="button-group">
-      <button id="modoBtn" class="toggle-btn">Card</button>
-      <button id="txespecBtn" class="toggle-btn">Tx Especial</button>
+      <h1>Produtos</h1>
+
+      <div id="produtosArea"></div>
+
     </div>
-
-    <div id="resultado"></div>
-    <div id="verTodas" class="ver-todas" style="display:none;">Ver todas parcelas</div>
-
-    <div id="produtosArea" style="display:none;"></div>
 
   </div>
 </div>
@@ -200,35 +225,42 @@ if (typeof taxas === "undefined") taxas = {};
 if (typeof coeficientesConsignado === "undefined") coeficientesConsignado = {};
 if (typeof produtos === "undefined") produtos = [];
 
-let modoSimulacao = "cartao";
-let txEspecialAtiva = false;
-let mostrarTodas = false;
 let carrinho = {};
+let modoSimulacao="cartao";
+let txEspecialAtiva=false;
+let mostrarTodas=false;
 
-const input = document.getElementById("valor");
-const resultadoDiv = document.getElementById("resultado");
-const produtosArea = document.getElementById("produtosArea");
+const telaSimulador=document.getElementById("telaSimulador");
+const telaProdutos=document.getElementById("telaProdutos");
+const input=document.getElementById("valor");
+const resultadoDiv=document.getElementById("resultado");
 
-function arredondarParaCima(v){ return Math.ceil(v*100)/100; }
-function formatarMoeda(v){ return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}); }
-function limparNumero(v){ return parseFloat(v.replace(/\D/g,""))/100; }
-
-/* PRODUTOS */
-
-document.getElementById("produtosBtn").addEventListener("click",()=>{
-  produtosArea.style.display = produtosArea.style.display==="none"?"block":"none";
+document.getElementById("abrirProdutos").onclick=()=>{
+  telaSimulador.classList.remove("ativa");
+  telaProdutos.classList.add("ativa");
   renderProdutos();
-});
+};
+
+document.getElementById("voltarSimulador").onclick=()=>{
+  telaProdutos.classList.remove("ativa");
+  telaSimulador.classList.add("ativa");
+};
+
+document.getElementById("limparCarrinho").onclick=()=>{
+  carrinho={};
+  atualizarTotal();
+  renderProdutos();
+};
 
 function renderProdutos(){
-  produtosArea.innerHTML="";
+  const area=document.getElementById("produtosArea");
+  area.innerHTML="";
   produtos.forEach(p=>{
     if(!carrinho[p.nome]) carrinho[p.nome]=0;
-
-    produtosArea.innerHTML+=`
+    area.innerHTML+=`
       <div class="produto-item">
         <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
-        <div class="produto-desc">${p.descricao || ""}</div>
+        <div class="produto-desc">${p.descricao||""}</div>
         <div class="produto-footer">
           <div class="qtd-controls">
             <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
@@ -236,8 +268,7 @@ function renderProdutos(){
             <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   });
 }
 
@@ -260,26 +291,30 @@ function atualizarTotal(){
   }
 }
 
-/* SIMULAÇÃO (mesma lógica original) */
+/* ---------- SIMULAÇÃO (inalterada) ---------- */
 
-document.getElementById("modoBtn").addEventListener("click",()=>{
+function arredondarParaCima(v){return Math.ceil(v*100)/100;}
+function formatarMoeda(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
+function limparNumero(v){return parseFloat(v.replace(/\D/g,""))/100;}
+
+document.getElementById("modoBtn").onclick=()=>{
   modoSimulacao=modoSimulacao==="cartao"?"consignado":"cartao";
   document.getElementById("modoBtn").textContent=modoSimulacao==="cartao"?"Card":"Plano Especial";
   document.getElementById("txespecBtn").style.display=modoSimulacao==="cartao"?"block":"none";
   calcularAtual();
-});
+};
 
-document.getElementById("txespecBtn").addEventListener("click",()=>{
+document.getElementById("txespecBtn").onclick=()=>{
   txEspecialAtiva=!txEspecialAtiva;
   document.getElementById("txespecBtn").classList.toggle("ativo");
   calcularAtual();
-});
+};
 
-document.getElementById("verTodas").addEventListener("click",()=>{
+document.getElementById("verTodas").onclick=()=>{
   mostrarTodas=!mostrarTodas;
   document.getElementById("verTodas").textContent=mostrarTodas?"Mostrar menos":"Ver todas parcelas";
   calcularAtual();
-});
+};
 
 input.addEventListener("input",e=>{
   let n=limparNumero(e.target.value);
@@ -295,22 +330,17 @@ function calcularAtual(){
 
 function calcular(valor){
   resultadoDiv.innerHTML="";
-
   if(modoSimulacao==="cartao"){
     for(let n=1;n<=18;n++){
       let taxa=taxas[n]||0;
       if(txEspecialAtiva && n<=3)taxa=0;
-
       const valorCorrigido=valor/(1-taxa);
       const parcela=arredondarParaCima(valorCorrigido/n);
       const totalFinal=arredondarParaCima(parcela*n);
-
-      if(n>12 && !mostrarTodas)continue;
-
+      if(n>12&&!mostrarTodas)continue;
       let classes="card";
       if(n<=3)classes+=" destacada";
       if(n>12)classes+=" opaca";
-
       resultadoDiv.innerHTML+=`
         <div class="${classes}">
           <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
@@ -335,7 +365,7 @@ function calcular(valor){
 
 /* CACHE */
 
-document.getElementById("clearCacheBtn").addEventListener("click",async()=>{
+document.getElementById("clearCacheBtn").onclick=async()=>{
   if("caches"in window){
     const keys=await caches.keys();
     for(let key of keys){await caches.delete(key);}
@@ -344,7 +374,7 @@ document.getElementById("clearCacheBtn").addEventListener("click",async()=>{
   sessionStorage.clear();
   alert("Cache limpo. Atualizando...");
   location.reload(true);
-});
+};
 
 if("serviceWorker"in navigator){
   navigator.serviceWorker.register("service-worker.js");
