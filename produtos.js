@@ -1,4 +1,4 @@
-const PRODUTOS = [
+const produtos = [
 { nome: "ARA 12L Base normal", valor: 3048.00},
 { nome: "Kit hidráulico", valor: 280.00},
 { nome: "ARA 12L", valor: 2694.00 },
