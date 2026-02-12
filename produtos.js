@@ -40,6 +40,5 @@ const PRODUTOS = [
 { nome: "Sleep Mask", valor: 283.00},
 { nome: "Cuecas", valor: 900.00},
 { nome: "Calcinha Fio", valor: 250.00},
-{ nome: "Calcinha Tanga", valor: 580.00},
-
+{ nome: "Calcinha Tanga", valor: 580.00}
 ];
