@@ -1,4 +1,4 @@
-const CACHE_NAME = "parcelamento-v3";
+const CACHE_NAME = "parcelamento-v4";
 
 const FILES_TO_CACHE = [
   "index.html",
