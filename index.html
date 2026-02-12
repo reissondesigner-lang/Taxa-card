@@ -126,7 +126,15 @@ input {
 
     <h1>Simulação</h1>
 
-    <input type="text" id="valor" placeholder="R$ 0,00">
+    <input 
+  type="text" 
+  id="valor" 
+  placeholder="R$ 0,00"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="off"
+  enterkeyhint="done"
+/>
 
     <div class="button-group">
       <button id="modoBtn" class="toggle-btn">Cred</button>
