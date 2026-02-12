@@ -10,13 +10,8 @@
 
 <style>
 
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 
 body {
   margin: 0;
@@ -50,14 +45,12 @@ h1 {
   text-align: center;
   font-weight: 600;
   font-size: 20px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   letter-spacing: 0.6px;
   opacity: 0.9;
 }
 
-.input-group {
-  margin-bottom: 16px;
-}
+.input-group { margin-bottom: 16px; }
 
 input {
   width: 100%;
@@ -73,14 +66,12 @@ input {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
 }
 
-input:focus {
-  box-shadow: 0 0 0 2px #2563eb;
-}
+input:focus { box-shadow: 0 0 0 2px #2563eb; }
 
 .toggle-btn {
   width: 100%;
   padding: 12px;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
   border-radius: 14px;
   border: none;
   font-size: 13px;
@@ -91,18 +82,12 @@ input:focus {
   transition: 0.25s ease;
 }
 
-.toggle-btn:hover {
-  transform: translateY(-1px);
-}
-
 .toggle-btn.ativo {
   background: linear-gradient(90deg, #16a34a, #22c55e);
   color: white;
 }
 
-.resultado {
-  margin-top: 5px;
-}
+.resultado { margin-top: 5px; }
 
 .card {
   background: rgba(15, 23, 42, 0.95);
@@ -111,21 +96,13 @@ input:focus {
   margin-bottom: 10px;
   transition: 0.25s ease;
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
-  animation: fadeUp 0.25s ease forwards;
-  opacity: 0;
-}
-
-.card:hover {
-  transform: translateY(-2px);
 }
 
 .card.destaque {
   background: linear-gradient(90deg, #1d4ed8, #2563eb);
 }
 
-.card.opaca {
-  filter: saturate(0.6);
-}
+.card.opaca { filter: saturate(0.6); }
 
 .parcela {
   font-size: 17px;
@@ -135,17 +112,6 @@ input:focus {
 .total {
   font-size: 11px;
   opacity: 0.7;
-}
-
-@keyframes fadeUp {
-  from {
-    transform: translateY(6px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 </style>
@@ -168,7 +134,13 @@ input:focus {
       >
     </div>
 
-    <button id="txespecBtn" class="toggle-btn">txespec</button>
+    <button id="modoBtn" class="toggle-btn">
+      Modo: Cartão/Boleto
+    </button>
+
+    <button id="txespecBtn" class="toggle-btn">
+      txespec
+    </button>
 
     <div class="resultado" id="resultado"></div>
 
@@ -177,7 +149,11 @@ input:focus {
 
 <script>
 
-const taxas = {
+// =====================
+// TAXAS CARTÃO
+// =====================
+
+let taxas = {
   1: 0.03019,
   2: 0.04559,
   3: 0.05408,
@@ -198,7 +174,33 @@ const taxas = {
   18: 0.18387
 };
 
+// =====================
+// TAXAS CONSIGNADO
+// (Substitua pelas reais)
+// =====================
+
+const taxasConsignado = {
+  12: 0.10,
+  24: 0.20,
+  36: 0.30,
+  48: 0.40,
+  60: 0.50,
+  72: 0.60,
+  84: 0.70,
+  96: 0.80
+};
+
+let modoSimulacao = "cartao";
 let txEspecialAtiva = false;
+
+const input = document.getElementById("valor");
+const resultadoDiv = document.getElementById("resultado");
+const txBtn = document.getElementById("txespecBtn");
+const modoBtn = document.getElementById("modoBtn");
+
+// =====================
+// FUNÇÕES AUXILIARES
+// =====================
 
 function arredondarParaCima(valor) {
   return Math.ceil(valor * 100) / 100;
@@ -215,23 +217,42 @@ function limparNumero(valor) {
   return parseFloat(valor.replace(/\D/g, "")) / 100;
 }
 
-const input = document.getElementById("valor");
-const resultadoDiv = document.getElementById("resultado");
-const txBtn = document.getElementById("txespecBtn");
+// =====================
+// BOTÃO MODO
+// =====================
+
+modoBtn.addEventListener("click", () => {
+
+  if (modoSimulacao === "cartao") {
+    modoSimulacao = "consignado";
+    modoBtn.textContent = "Modo: Consignado";
+    txBtn.style.display = "none";
+  } else {
+    modoSimulacao = "cartao";
+    modoBtn.textContent = "Modo: Cartão/Boleto";
+    txBtn.style.display = "block";
+  }
+
+  const valorAtual = limparNumero(input.value);
+  if (valorAtual) calcular(valorAtual);
+});
+
+// =====================
+// BOTÃO TAXA ESPECIAL
+// =====================
 
 txBtn.addEventListener("click", function() {
 
   txEspecialAtiva = !txEspecialAtiva;
   txBtn.classList.toggle("ativo");
 
-  // Vibração leve (se suportado)
-  if (navigator.vibrate) {
-    navigator.vibrate(20);
-  }
-
   const valorAtual = limparNumero(input.value);
   if (valorAtual) calcular(valorAtual);
 });
+
+// =====================
+// INPUT
+// =====================
 
 input.addEventListener("input", function(e) {
 
@@ -247,38 +268,68 @@ input.addEventListener("input", function(e) {
   calcular(numero);
 });
 
+// =====================
+// CALCULAR
+// =====================
+
 function calcular(valor) {
 
   resultadoDiv.innerHTML = "";
 
-  for (let n = 1; n <= 18; n++) {
+  if (modoSimulacao === "cartao") {
 
-    let taxa = taxas[n] || 0;
+    for (let n = 1; n <= 18; n++) {
 
-    if (txEspecialAtiva && n <= 3) {
-      taxa = 0;
+      let taxa = taxas[n] || 0;
+
+      if (txEspecialAtiva && n <= 3) {
+        taxa = 0;
+      }
+
+      const valorCorrigido = valor / (1 - taxa);
+      const parcela = arredondarParaCima(valorCorrigido / n);
+      const totalFinal = arredondarParaCima(parcela * n);
+
+      renderParcela(n, parcela, totalFinal);
     }
 
-    const valorCorrigido = valor / (1 - taxa);
-    const parcela = arredondarParaCima(valorCorrigido / n);
-    const totalFinal = arredondarParaCima(parcela * n);
+  } else {
 
-    let classe = "card";
+    const parcelasConsignado = [12,24,36,48,60,72,84,96];
 
-    if (n <= 3) {
-      classe = "card destaque";
-    } else if (n >= 13) {
-      classe = "card opaca";
-    }
+    parcelasConsignado.forEach(n => {
 
-    resultadoDiv.innerHTML += `
-      <div class="${classe}">
-        <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-        <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-      </div>
-    `;
+      const taxa = taxasConsignado[n] || 0;
+
+      const valorCorrigido = valor / (1 - taxa);
+      const parcela = arredondarParaCima(valorCorrigido / n);
+      const totalFinal = arredondarParaCima(parcela * n);
+
+      renderParcela(n, parcela, totalFinal);
+    });
   }
 }
+
+function renderParcela(n, parcela, totalFinal) {
+
+  let classe = "card";
+
+  if (modoSimulacao === "cartao") {
+    if (n <= 3) classe = "card destaque";
+    else if (n >= 13) classe = "card opaca";
+  }
+
+  resultadoDiv.innerHTML += `
+    <div class="${classe}">
+      <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+      <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+    </div>
+  `;
+}
+
+// =====================
+// SERVICE WORKER
+// =====================
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
