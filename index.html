@@ -170,6 +170,36 @@ input {
   text-align: center;
   font-size: 13px;
 }
+  .categoria-btn {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s;
+}
+
+.categoria-btn:hover { background: #22c55e; }
+
+.categoria-produtos {
+  overflow: hidden;
+  max-height: 0;
+  padding: 0;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.categoria-btn .seta {
+  transition: transform 0.4s ease;
+}
+
+.categoria-btn.ativa .seta { transform: rotate(90deg); }
 </style>
 </head>
 
@@ -265,44 +295,40 @@ function renderProdutos() {
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
 
-  let categoriaAtual = "";
+  // Pegar todas as categorias únicas
+  const categorias = [...new Set(produtos.map(p => p.categoria))];
 
-  // Garantir que os produtos estejam ordenados por categoria
-  const produtosOrdenados = produtos.slice().sort((a, b) => {
-    if (a.categoria < b.categoria) return -1;
-    if (a.categoria > b.categoria) return 1;
-    return 0;
+  categorias.forEach(cat => {
+    const btnId = "cat-" + cat.replace(/\s/g, "");
+    
+    // Botão da categoria
+    area.innerHTML += `
+      <button class="categoria-btn" onclick="toggleCategoria('${btnId}', this)">
+        ${cat} <span class="seta">▶</span>
+      </button>
+      <div class="categoria-produtos" id="${btnId}"></div>
+    `;
   });
 
-  produtosOrdenados.forEach(p => {
-    // Se mudar a categoria, adiciona título visual
-    if (p.categoria !== categoriaAtual) {
-      categoriaAtual = p.categoria;
-      area.innerHTML += `
-        <h3 style="
-          margin: 12px 0 6px 0; 
-          padding: 6px 10px; 
-          background: rgba(34, 197, 94, 0.2); 
-          border-radius: 10px; 
-          color: #16a34a;
-          font-weight: 600;
-        ">${categoriaAtual}</h3>`;
-    }
-
-    if (!carrinho[p.nome]) carrinho[p.nome] = 0;
-
-    area.innerHTML += `
-      <div class="produto-item">
-        <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
-        <div class="produto-desc">${p.descricao || ""}</div>
-        <div class="produto-footer">
-          <div class="qtd-controls">
-            <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
-            <div class="qtd-num">${carrinho[p.nome]}</div>
-            <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
+  // Inserir produtos dentro de cada categoria
+  categorias.forEach(cat => {
+    const container = document.getElementById("cat-" + cat.replace(/\s/g, ""));
+    produtos.filter(p => p.categoria === cat).forEach(p => {
+      if (!carrinho[p.nome]) carrinho[p.nome] = 0;
+      container.innerHTML += `
+        <div class="produto-item">
+          <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
+          <div class="produto-desc">${p.descricao || ""}</div>
+          <div class="produto-footer">
+            <div class="qtd-controls">
+              <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
+              <div class="qtd-num">${carrinho[p.nome]}</div>
+              <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
+            </div>
           </div>
         </div>
-      </div>`;
+      `;
+    });
   });
 }
 
@@ -424,6 +450,19 @@ document.getElementById("clearCacheBtn").onclick = async () => {
 
 if("serviceWorker"in navigator){
   navigator.serviceWorker.register("service-worker.js");
+}
+  function toggleCategoria(id, btn) {
+  const container = document.getElementById(id);
+
+  if (container.style.maxHeight && container.style.maxHeight !== "0px") {
+    container.style.maxHeight = "0px";
+    container.style.padding = "0";
+    btn.classList.remove("ativa");
+  } else {
+    container.style.maxHeight = container.scrollHeight + "px";
+    container.style.padding = "8px 0";
+    btn.classList.add("ativa");
+  }
 }
 </script>
 
