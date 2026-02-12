@@ -48,5 +48,4 @@ const produtos = [
 { nome: "Calcinha Fio", valor: 250.00, categoria:"Acessorios"},
 { nome: "Calcinha Tanga", valor: 580.00, categoria:"Acessorios"}
 
-{ nome: "Calcinha Tanga", valor: 580.00, categoria:"Acessorios"}
 ];
