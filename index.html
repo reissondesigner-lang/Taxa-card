@@ -261,41 +261,40 @@ document.getElementById("limparCarrinho").onclick=()=>{
   renderProdutos();
 };
 
-function renderProdutos(){
+function renderProdutos() {
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
 
   let categoriaAtual = "";
 
-  produtos.forEach(p => {
+  // Garantir que os produtos estejam ordenados por categoria
+  const produtosOrdenados = produtos.slice().sort((a, b) => {
+    if (a.categoria < b.categoria) return -1;
+    if (a.categoria > b.categoria) return 1;
+    return 0;
+  });
 
+  produtosOrdenados.forEach(p => {
+    // Se mudar a categoria, adiciona título visual
     if (p.categoria !== categoriaAtual) {
       categoriaAtual = p.categoria;
-
       area.innerHTML += `
-        <div style="
-          margin:18px 0 8px 0;
-          font-size:13px;
-          font-weight:600;
-          opacity:0.6;
-          border-bottom:1px solid rgba(255,255,255,0.08);
-          padding-bottom:4px;
-        ">
-          ${categoriaAtual}
-        </div>
-      `;
+        <h3 style="
+          margin: 12px 0 6px 0; 
+          padding: 6px 10px; 
+          background: rgba(34, 197, 94, 0.2); 
+          border-radius: 10px; 
+          color: #16a34a;
+          font-weight: 600;
+        ">${categoriaAtual}</h3>`;
     }
 
-    if(!carrinho[p.nome]) carrinho[p.nome] = 0;
+    if (!carrinho[p.nome]) carrinho[p.nome] = 0;
 
     area.innerHTML += `
       <div class="produto-item">
-        <div class="produto-header">
-          ${p.nome} - ${formatarMoeda(p.valor)}
-        </div>
-        <div class="produto-desc">
-          ${p.descricao || ""}
-        </div>
+        <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
+        <div class="produto-desc">${p.descricao || ""}</div>
         <div class="produto-footer">
           <div class="qtd-controls">
             <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
@@ -303,8 +302,7 @@ function renderProdutos(){
             <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   });
 }
 
