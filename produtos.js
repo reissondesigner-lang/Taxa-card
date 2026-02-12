@@ -63,5 +63,5 @@ const produtos = [
 { nome: "King Size", valor: 18110.00, categoria:"ARS Evo Massagem"},
 { nome: "Solteiro", valor: 9023.00, categoria:"ARS Evo Massagem"},
 
-{ nome: "Soft Fir", valor: 510.00, categoria:"Travesseiro"}
+{ nome: "Soft Fir", valor: 510.00, categoria:"ARS Travesseiro"}
 ];
