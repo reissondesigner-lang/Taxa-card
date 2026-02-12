@@ -1,11 +1,11 @@
-const produtos = [
+const PRODUTOS = [
 { nome: "ARA 12L Base normal", valor: 3048.00},
 { nome: "Kit hidráulico", valor: 280.00},
 { nome: "ARA 12L", valor: 2694.00 },
 { nome: "Base simples", valor: 254.00 },
 { nome: "Base tecnologias", valor: 688.00 },
 { nome: "Bracelete Fir Ion", valor: 768.00},
-{ nome: "Squeese Alcaline Max", valor: 1.700.00 },
+{ nome: "Squeese Alcaline Max", valor: 1700.00 },
 { nome: "kit reposição squeese Alcaline Max", valor: 287.00},
 { nome: "Palmilha Colorida", valor: 592.00},
 { nome: "Palmilha Azul", valor: 527.00},
@@ -24,7 +24,7 @@ const produtos = [
 { nome: "Kit Upgrade ARA 3L", valor: 742.00},
 { nome: "Refil Alcaline Max", valor: 366.00},
 { nome: "refil Alcaline", valor: 204.00},
-{ nome: "Bracelete Double Fir", valor: 476,00},
+{ nome: "Bracelete Double Fir", valor: 476.00},
 { nome: "Bracelete Ifantil", valor: 596.00},
 { nome: "Bracelete Simples", valor: 296.00},
 { nome: "Bracelete Fir Style (Lançamento)", valor: 677.00},
