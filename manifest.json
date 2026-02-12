@@ -1,6 +1,6 @@
 {
-  "name": "Parcelamento",
-  "short_name": "Parcelas",
+  "name": "Taxa Card",
+  "short_name": "Taxa Card",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",
