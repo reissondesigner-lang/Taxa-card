@@ -3,7 +3,7 @@
   "short_name": "Taxa Card",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
+  "background_color": "#122841",
   "theme_color": "#0f172a",
   "icons": [
     {
@@ -12,7 +12,7 @@
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-512-v2.png",
       "sizes": "512x512",
       "type": "image/png"
     }
