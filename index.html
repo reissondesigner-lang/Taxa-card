@@ -374,15 +374,27 @@ function calcular(valor){
 
 /* CACHE */
 
-document.getElementById("clearCacheBtn").onclick=async()=>{
-  if("caches"in window){
-    const keys=await caches.keys();
-    for(let key of keys){await caches.delete(key);}
+document.getElementById("clearCacheBtn").onclick = async () => {
+
+  if ("caches" in window) {
+    const keys = await caches.keys();
+    for (let key of keys) {
+      await caches.delete(key);
+    }
   }
+
   localStorage.clear();
   sessionStorage.clear();
-  alert("Cache limpo. Atualizando...");
-  location.reload(true);
+
+  if ("serviceWorker" in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    for (let registration of registrations) {
+      await registration.unregister();
+    }
+  }
+
+  alert("Aplicação resetada. Reinstale se necessário.");
+  location.reload();
 };
 
 if("serviceWorker"in navigator){
