@@ -291,47 +291,80 @@ document.getElementById("limparCarrinho").onclick=()=>{
   renderProdutos();
 };
 
+// Objeto para controlar quais categorias estão abertas
+let categoriasAtivas = {};
+
 function renderProdutos() {
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
 
-  // Pegar todas as categorias únicas
-  const categorias = [...new Set(produtos.map(p => p.categoria))];
+  let categoriaAtual = "";
 
-  categorias.forEach(cat => {
-    const btnId = "cat-" + cat.replace(/\s/g, "");
-    
-    // Botão da categoria
-    area.innerHTML += `
-      <button class="categoria-btn" onclick="toggleCategoria('${btnId}', this)">
-        ${cat} <span class="seta">▶</span>
-      </button>
-      <div class="categoria-produtos" id="${btnId}"></div>
-    `;
+  // Ordenar produtos por categoria
+  const produtosOrdenados = produtos.slice().sort((a, b) => {
+    if (a.categoria < b.categoria) return -1;
+    if (a.categoria > b.categoria) return 1;
+    return 0;
   });
 
-  // Inserir produtos dentro de cada categoria
-  categorias.forEach(cat => {
-    const container = document.getElementById("cat-" + cat.replace(/\s/g, ""));
-    produtos.filter(p => p.categoria === cat).forEach(p => {
-      if (carrinho[p.nome] === undefined) carrinho[p.nome] = 0;
-      container.innerHTML += `
-        <div class="produto-item">
-          <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
-          <div class="produto-desc">${p.descricao || ""}</div>
-          <div class="produto-footer">
-            <div class="qtd-controls">
-              <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
-              <div class="qtd-num">${carrinho[p.nome]}</div>
-              <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
-            </div>
+  produtosOrdenados.forEach(p => {
+    // Quando a categoria muda, criar o botão de categoria
+    if (p.categoria !== categoriaAtual) {
+      categoriaAtual = p.categoria;
+
+      // Inicializa como expandida se ainda não existir
+      if (categoriasAtivas[categoriaAtual] === undefined) {
+        categoriasAtivas[categoriaAtual] = true;
+      }
+
+      // Botão de categoria
+      area.innerHTML += `
+        <h3 class="categoria-btn" style="
+          margin: 12px 0 6px 0; 
+          padding: 6px 10px; 
+          background: rgba(34, 197, 94, 0.2); 
+          border-radius: 10px; 
+          color: #16a34a;
+          font-weight: 600;
+          cursor: pointer;
+        " onclick="toggleCategoria('${categoriaAtual}')">
+          ${categoriaAtual} ${categoriasAtivas[categoriaAtual] ? '▼' : '►'}
+        </h3>
+        <div class="categoria-produtos" id="cat-${categoriaAtual}" style="display: ${categoriasAtivas[categoriaAtual] ? 'block' : 'none'}">
+      `;
+    }
+
+    if (!carrinho[p.nome]) carrinho[p.nome] = 0;
+
+    // Produto dentro da categoria
+    area.innerHTML += `
+      <div class="produto-item">
+        <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
+        <div class="produto-desc">${p.descricao || ""}</div>
+        <div class="produto-footer">
+          <div class="qtd-controls">
+            <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
+            <div class="qtd-num">${carrinho[p.nome]}</div>
+            <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
           </div>
         </div>
-      `;
-    });
+      </div>`;
+  });
+
+  // Fecha todas as divs de categoria abertas
+  const divsCategoria = document.querySelectorAll(".categoria-produtos");
+  divsCategoria.forEach(div => {
+    // Garante que o display está de acordo com o estado
+    const cat = div.id.replace("cat-", "");
+    div.style.display = categoriasAtivas[cat] ? "block" : "none";
   });
 }
 
+// Função para alternar categoria
+function toggleCategoria(cat) {
+  categoriasAtivas[cat] = !categoriasAtivas[cat];
+  renderProdutos(); // re-renderiza mantendo o estado das categorias
+}
 window.alterarQtd=function(nome,delta){
   carrinho[nome]+=delta;
   if(carrinho[nome]<0)carrinho[nome]=0;
