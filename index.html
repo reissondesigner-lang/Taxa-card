@@ -192,20 +192,40 @@ const telaProdutos = document.getElementById("telaProdutos");
 const input = document.getElementById("valor");
 const resultadoDiv = document.getElementById("resultado");
 
-// Função que altera a quantidade de um produto no carrinho
+// ABRIR PRODUTOS
+document.getElementById("abrirProdutos").onclick = () => {
+  telaSimulador.classList.remove("ativa");
+  telaProdutos.classList.add("ativa");
+  renderProdutos();
+};
+
+// VOLTAR
+document.getElementById("voltarSimulador").onclick = () => {
+  telaProdutos.classList.remove("ativa");
+  telaSimulador.classList.add("ativa");
+};
+
+// LIMPAR CARRINHO
+document.getElementById("limparCarrinho").onclick = () => {
+  carrinho = {};
+  atualizarTotal();
+  renderProdutos();
+};
+
+// FUNÇÃO PARA ALTERAR QUANTIDADE
 function alterarQtd(produto, delta, qtdDiv){
-  if (carrinho[produto] === undefined) carrinho[produto] = 0;
+  if(carrinho[produto] === undefined) carrinho[produto] = 0;
   carrinho[produto] += delta;
-  if (carrinho[produto] < 0) carrinho[produto] = 0;
+  if(carrinho[produto] < 0) carrinho[produto] = 0;
   qtdDiv.textContent = carrinho[produto];
   atualizarTotal();
 }
 
-// Função que atualiza o total do carrinho
+// FUNÇÃO ATUALIZAR TOTAL
 function atualizarTotal(){
   let total = 0;
   produtos.forEach(p => total += p.valor * (carrinho[p.nome] || 0));
-  if (total > 0) {
+  if(total > 0){
     input.value = formatarMoeda(total);
     calcular(total);
   } else {
@@ -214,7 +234,7 @@ function atualizarTotal(){
   }
 }
 
-// Função que renderiza os produtos nas categorias
+// FUNÇÃO PARA RENDERIZAR PRODUTOS
 function renderProdutos(){
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
@@ -269,6 +289,76 @@ function renderProdutos(){
       btnMenos.onclick = () => alterarQtd(p.nome, -1, qtdDiv);
     });
   });
+}
+
+// ---------- SIMULAÇÃO ----------
+function arredondarParaCima(v) { return Math.ceil(v * 100) / 100; }
+function formatarMoeda(v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+function limparNumero(v) { return parseFloat(v.replace(/\D/g, "")) / 100; }
+
+document.getElementById("modoBtn").onclick = () => {
+  modoSimulacao = modoSimulacao === "cartao" ? "consignado" : "cartao";
+  document.getElementById("modoBtn").textContent = modoSimulacao === "cartao" ? "Card" : "Plano Especial";
+  document.getElementById("txespecBtn").style.display = modoSimulacao === "cartao" ? "block" : "none";
+  calcularAtual();
+};
+
+document.getElementById("txespecBtn").onclick = () => {
+  txEspecialAtiva = !txEspecialAtiva;
+  document.getElementById("txespecBtn").classList.toggle("ativo");
+  calcularAtual();
+};
+
+document.getElementById("verTodas").onclick = () => {
+  mostrarTodas = !mostrarTodas;
+  document.getElementById("verTodas").textContent = mostrarTodas ? "Mostrar menos" : "Ver todas parcelas";
+  calcularAtual();
+};
+
+input.addEventListener("input", e => {
+  let n = limparNumero(e.target.value);
+  input.value = n ? formatarMoeda(n) : "";
+  if (n) calcular(n);
+});
+
+function calcularAtual() {
+  const v = limparNumero(input.value);
+  if (v) calcular(v);
+}
+
+function calcular(valor) {
+  resultadoDiv.innerHTML = "";
+  if (modoSimulacao === "cartao") {
+    for (let n = 1; n <= 18; n++) {
+      let taxa = taxas[n] || 0;
+      if (txEspecialAtiva && n <= 3) taxa = 0;
+      const valorCorrigido = valor / (1 - taxa);
+      const parcela = arredondarParaCima(valorCorrigido / n);
+      const totalFinal = arredondarParaCima(parcela * n);
+      if (n > 12 && !mostrarTodas) continue;
+      let classes = "card";
+      if (n <= 3) classes += " destacada";
+      if (n > 12) classes += " opaca";
+      resultadoDiv.innerHTML += `
+        <div class="${classes}">
+          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+        </div>`;
+    }
+    document.getElementById("verTodas").style.display = "block";
+  } else {
+    document.getElementById("verTodas").style.display = "none";
+    Object.keys(coeficientesConsignado).sort((a, b) => a - b).forEach(n => {
+      const coef = coeficientesConsignado[n];
+      const parcela = arredondarParaCima(valor * coef);
+      const totalFinal = arredondarParaCima(parcela * n);
+      resultadoDiv.innerHTML += `
+        <div class="card">
+          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
+          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
+        </div>`;
+    });
+  }
 }
 </script>
 
