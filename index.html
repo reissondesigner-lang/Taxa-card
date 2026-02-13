@@ -311,48 +311,86 @@ function renderProdutos() {
   produtos.forEach(p => {
     if (!produtosPorCategoria[p.categoria]) produtosPorCategoria[p.categoria] = [];
     produtosPorCategoria[p.categoria].push(p);
-
     if (carrinho[p.nome] === undefined) carrinho[p.nome] = 0;
   });
 
-  // Renderiza cada categoria
   Object.keys(produtosPorCategoria).sort().forEach(cat => {
+    // Inicializa estado da categoria se necessário
     if (categoriasAtivas[cat] === undefined) categoriasAtivas[cat] = true;
 
-    area.innerHTML += `
-      <h3 class="categoria-btn ${categoriasAtivas[cat] ? 'ativa' : ''}" data-cat="${cat}" onclick="toggleCategoria('${cat}')">
-        ${cat} ${categoriasAtivas[cat] ? '▼' : '►'}
-      </h3>`;
+    // Cria botão da categoria
+    const btn = document.createElement("h3");
+    btn.className = "categoria-btn";
+    btn.dataset.cat = cat;
+    btn.innerHTML = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
+    btn.onclick = () => toggleCategoria(cat, container, btn);
+    area.appendChild(btn);
 
-    area.innerHTML += `<div id="cat-${cat}" class="categoria-produtos" style="max-height:${categoriasAtivas[cat] ? '1000px' : '0px'}; padding:${categoriasAtivas[cat] ? '8px 0' : '0'};">`;
+    // Container da categoria
+    const container = document.createElement("div");
+    container.className = "categoria-produtos";
+    container.id = "cat-" + cat;
+    container.style.maxHeight = categoriasAtivas[cat] ? container.scrollHeight + "px" : "0px";
+    container.style.padding = categoriasAtivas[cat] ? "8px 0" : "0";
+    area.appendChild(container);
 
+    // Renderiza produtos dentro da categoria
     produtosPorCategoria[cat].forEach(p => {
-      area.innerHTML += `
-        <div class="produto-item">
-          <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
-          <div class="produto-desc">${p.descricao || ""}</div>
-          <div class="produto-footer">
-            <div class="qtd-controls">
-              <button class="qtd-btn" onclick="alterarQtd('${p.nome}',-1)">-</button>
-              <div class="qtd-num">${carrinho[p.nome]}</div>
-              <button class="qtd-btn" onclick="alterarQtd('${p.nome}',1)">+</button>
-            </div>
+      const produtoDiv = document.createElement("div");
+      produtoDiv.className = "produto-item";
+      produtoDiv.innerHTML = `
+        <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
+        <div class="produto-desc">${p.descricao || ""}</div>
+        <div class="produto-footer">
+          <div class="qtd-controls">
+            <button class="qtd-btn">-</button>
+            <div class="qtd-num">${carrinho[p.nome]}</div>
+            <button class="qtd-btn">+</button>
           </div>
-        </div>`;
-    });
+        </div>
+      `;
+      container.appendChild(produtoDiv);
 
-    area.innerHTML += `</div>`;
+      // Referências para os botões e quantidade
+      const qtdNumDiv = produtoDiv.querySelector(".qtd-num");
+      const btnMais = produtoDiv.querySelectorAll(".qtd-btn")[1];
+      const btnMenos = produtoDiv.querySelectorAll(".qtd-btn")[0];
+
+      btnMais.onclick = () => alterarQtd(p.nome, 1, qtdNumDiv);
+      btnMenos.onclick = () => alterarQtd(p.nome, -1, qtdNumDiv);
+    });
   });
 }
 
-function atualizarTotal(){
-  let total=0;
-  produtos.forEach(p=> total+=p.valor*(carrinho[p.nome]||0));
-  input.value= total>0 ? formatarMoeda(total) : "";
-  resultadoDiv.innerHTML = total>0 ? "" : "";
-  if(total>0) calcular(total);
+// Nova versão de alterarQtd que usa referência direta da div de quantidade
+function alterarQtd(produto, delta, qtdDiv) {
+  if (carrinho[produto] === undefined) carrinho[produto] = 0;
+  carrinho[produto] += delta;
+  if (carrinho[produto] < 0) carrinho[produto] = 0;
+
+  // Atualiza a quantidade na tela
+  qtdDiv.textContent = carrinho[produto];
+
+  atualizarTotal();
 }
 
+// Atualização de toggleCategoria para usar maxHeight e manter estado
+function toggleCategoria(cat, container, btn) {
+  categoriasAtivas[cat] = !categoriasAtivas[cat];
+
+  if (categoriasAtivas[cat]) {
+    container.style.maxHeight = container.scrollHeight + "px";
+    container.style.padding = "8px 0";
+    btn.classList.add("ativa");
+  } else {
+    container.style.maxHeight = "0px";
+    container.style.padding = "0";
+    btn.classList.remove("ativa");
+  }
+
+  // Atualiza seta do botão
+  btn.innerHTML = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
+}
 /* ---------- SIMULAÇÃO (inalterada) ---------- */
 
 function arredondarParaCima(v){return Math.ceil(v*100)/100;}
