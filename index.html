@@ -139,6 +139,20 @@ document.getElementById("limparCarrinho").onclick = () => {
   renderProdutos();
 };
 
+  // LIMPAR CACHE (CARRINHO)
+document.getElementById("clearCacheBtn").onclick = () => {
+  // Resetando o carrinho
+  carrinho = {};  // Limpa os produtos no carrinho
+  atualizarTotal();  // Atualiza o total do carrinho (ficará vazio)
+
+  // Se estiver usando localStorage ou sessionStorage para cache
+  localStorage.clear();  // Limpa o cache local (localStorage)
+  // sessionStorage.clear(); // Caso use sessionStorage, descomente esta linha
+
+  renderProdutos();  // Re-renderiza os produtos com o carrinho resetado
+};
+
+
 // FUNÇÃO PARA ALTERAR QUANTIDADE
 function alterarQtd(produto, delta, qtdDiv) {
   if (carrinho[produto] === undefined) carrinho[produto] = 0;
