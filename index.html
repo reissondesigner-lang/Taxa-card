@@ -192,7 +192,6 @@ function renderProdutos() {
 
   Object.keys(produtosPorCategoria).sort().forEach(cat => {
     if (categoriasAtivas[cat] === undefined) categoriasAtivas[cat] = true;
-
     // Container de produtos da categoria
     const container = document.createElement("div");
     container.className = "categoria-produtos";
