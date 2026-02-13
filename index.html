@@ -21,11 +21,7 @@ body {
   justify-content: center;
 }
 
-.container {
-  width: 100%;
-  max-width: 420px;
-  padding: 28px 18px 40px 18px;
-}
+.container { width: 100%; max-width: 420px; padding: 28px 18px 40px 18px; }
 
 .app-card {
   backdrop-filter: blur(14px);
@@ -36,11 +32,7 @@ body {
   position: relative;
 }
 
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.top-bar { display: flex; justify-content: space-between; align-items: center; }
 
 .clear-cache, .produtos-btn, .voltar-btn, .limpar-btn {
   font-size: 12px;
@@ -48,12 +40,7 @@ body {
   opacity: 0.8;
 }
 
-h1 {
-  text-align: center;
-  font-weight: 600;
-  font-size: 20px;
-  margin: 20px 0;
-}
+h1 { text-align: center; font-weight: 600; font-size: 20px; margin: 20px 0; }
 
 input {
   width: 100%;
@@ -68,11 +55,7 @@ input {
   margin-bottom: 12px;
 }
 
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
+.button-group { display: flex; gap: 10px; margin-bottom: 12px; }
 
 .toggle-btn {
   flex: 1;
@@ -85,108 +68,36 @@ input {
   cursor: pointer;
 }
 
-.toggle-btn.ativo {
-  background: linear-gradient(90deg, #16a34a, #22c55e);
-  color: white;
-}
+.toggle-btn.ativo { background: linear-gradient(90deg, #16a34a, #22c55e); color: white; }
 
-.card {
-  background: rgba(15, 23, 42, 0.95);
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 10px;
-}
-
-.card.destacada {
-  border: 1px solid #3990C9;
-  box-shadow: 0 0 10px #225678;
-}
-
+.card { background: rgba(15, 23, 42, 0.95); padding: 14px; border-radius: 14px; margin-bottom: 10px; }
+.card.destacada { border: 1px solid #3990C9; box-shadow: 0 0 10px #225678; }
 .card.opaca { opacity: 0.45; }
 
 .parcela { font-size: 17px; font-weight: 600; }
 .total { font-size: 11px; opacity: 0.7; }
 
-.ver-todas {
-  text-align: center;
-  font-size: 12px;
-  cursor: pointer;
-  opacity: 0.7;
-  margin: 10px 0;
-}
+.ver-todas { text-align: center; font-size: 12px; cursor: pointer; opacity: 0.7; margin: 10px 0; }
 
 /* TELA PRODUTOS */
+.tela { display: none; }
+.tela.ativa { display: block; }
 
-.tela {
-  display: none;
-}
+.produto-item { background: rgba(15,23,42,0.95); padding: 12px; border-radius: 12px; margin-bottom: 10px; }
+.produto-header { font-size: 14px; font-weight: 600; }
+.produto-desc { font-size: 11px; opacity: 0.6; margin: 4px 0 8px 0; }
+.produto-footer { display: flex; justify-content: space-between; align-items: center; }
 
-.tela.ativa {
-  display: block;
-}
-
-.produto-item {
-  background: rgba(15,23,42,0.95);
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-}
-
-.produto-header {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.produto-desc {
-  font-size: 11px;
-  opacity: 0.6;
-  margin: 4px 0 8px 0;
-}
-
-.produto-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.qtd-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.qtd-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: none;
-  background: #1e293b;
-  color: white;
-  cursor: pointer;
-}
-
-.qtd-num {
-  min-width: 18px;
-  text-align: center;
-  font-size: 13px;
-}
+.qtd-controls { display: flex; align-items: center; gap: 8px; }
+.qtd-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: #1e293b; color: white; cursor: pointer; }
+.qtd-num { min-width: 18px; text-align: center; font-size: 13px; }
 
 .categoria-btn {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background: #16a34a;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.3s;
+  width: 100%; padding: 10px; margin: 10px 0;
+  background: #16a34a; color: white; border: none; border-radius: 8px;
+  font-weight: 600; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;
 }
-
 .categoria-btn:hover { background: #22c55e; }
 
 .categoria-produtos {
@@ -196,22 +107,16 @@ input {
   transition: max-height 0.4s ease, padding 0.4s ease;
 }
 
-.categoria-btn .seta {
-  transition: transform 0.4s ease;
-}
-
 .categoria-btn.ativa .seta { transform: rotate(90deg); }
 </style>
 </head>
 
 <body>
-
 <div class="container">
   <div class="app-card">
 
     <!-- TELA SIMULADOR -->
     <div id="telaSimulador" class="tela ativa">
-
       <div class="top-bar">
         <div class="produtos-btn" id="abrirProdutos">Produtos</div>
         <div class="clear-cache" id="clearCacheBtn">↻</div>
@@ -219,16 +124,7 @@ input {
 
       <h1>Simulação</h1>
 
-      <input 
-        type="text"
-        id="valor"
-        placeholder="R$ 0,00"
-        inputmode="numeric"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        name="valor-simulacao">
+      <input type="text" id="valor" placeholder="R$ 0,00" inputmode="numeric">
 
       <div class="button-group">
         <button id="modoBtn" class="toggle-btn">Card</button>
@@ -237,21 +133,17 @@ input {
 
       <div id="resultado"></div>
       <div id="verTodas" class="ver-todas" style="display:none;">Ver todas parcelas</div>
-
     </div>
 
     <!-- TELA PRODUTOS -->
     <div id="telaProdutos" class="tela">
-
       <div class="top-bar">
         <div class="voltar-btn" id="voltarSimulador">← Voltar</div>
         <div class="limpar-btn" id="limparCarrinho">Limpar Carrinho</div>
       </div>
 
       <h1>Produtos</h1>
-
       <div id="produtosArea"></div>
-
     </div>
 
   </div>
@@ -261,72 +153,62 @@ input {
 <script src="produtos.js"></script>
 
 <script>
-if (typeof taxas === "undefined") taxas = {};
-if (typeof coeficientesConsignado === "undefined") coeficientesConsignado = {};
-if (typeof produtos === "undefined") produtos = [];
+// Inicialização
+if(typeof taxas==="undefined") taxas={};
+if(typeof coeficientesConsignado==="undefined") coeficientesConsignado={};
+if(typeof produtos==="undefined") produtos=[];
 
 let carrinho = {};
-let modoSimulacao="cartao";
-let txEspecialAtiva=false;
-let mostrarTodas=false;
-
-const telaSimulador=document.getElementById("telaSimulador");
-const telaProdutos=document.getElementById("telaProdutos");
-const input=document.getElementById("valor");
-const resultadoDiv=document.getElementById("resultado");
-
-document.getElementById("abrirProdutos").onclick=()=>{ telaSimulador.classList.remove("ativa"); telaProdutos.classList.add("ativa"); renderProdutos(); };
-document.getElementById("voltarSimulador").onclick=()=>{ telaProdutos.classList.remove("ativa"); telaSimulador.classList.add("ativa"); };
-document.getElementById("limparCarrinho").onclick=()=>{ carrinho={}; atualizarTotal(); renderProdutos(); };
-
-// Controle de categorias abertas
 let categoriasAtivas = {};
+let modoSimulacao = "cartao";
+let txEspecialAtiva = false;
+let mostrarTodas = false;
 
-function toggleCategoria(cat) {
-  const container = document.getElementById("cat-" + cat);
-  const btn = document.querySelector(`.categoria-btn[data-cat="${cat}"]`);
-  if (!container || !btn) return;
+const telaSimulador = document.getElementById("telaSimulador");
+const telaProdutos = document.getElementById("telaProdutos");
+const input = document.getElementById("valor");
+const resultadoDiv = document.getElementById("resultado");
 
-  if (container.style.maxHeight && container.style.maxHeight !== "0px") {
-    container.style.maxHeight = "0px";
-    container.style.padding = "0";
-    btn.classList.remove("ativa");
-    categoriasAtivas[cat] = false;
-  } else {
-    container.style.maxHeight = container.scrollHeight + "px";
-    container.style.padding = "8px 0";
-    btn.classList.add("ativa");
-    categoriasAtivas[cat] = true;
-  }
+// Ações principais
+document.getElementById("abrirProdutos").onclick = () => { telaSimulador.classList.remove("ativa"); telaProdutos.classList.add("ativa"); renderProdutos(); };
+document.getElementById("voltarSimulador").onclick = () => { telaProdutos.classList.remove("ativa"); telaSimulador.classList.add("ativa"); };
+document.getElementById("limparCarrinho").onclick = () => { carrinho={}; atualizarTotal(); renderProdutos(); };
 
-  btn.textContent = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
+// Funções auxiliares
+function atualizarTotal(){
+  let total = 0;
+  produtos.forEach(p => total += (carrinho[p.nome] || 0) * p.valor);
+  input.value = total ? formatarMoeda(total) : "";
+  if(total) calcular(total); else resultadoDiv.innerHTML="";
 }
 
+function formatarMoeda(v){ return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
+function limparNumero(v){ return parseFloat(v.replace(/\D/g,""))/100 || 0; }
+function arredondarParaCima(v){ return Math.ceil(v*100)/100; }
+
+// Renderização de produtos
 function renderProdutos() {
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
-
-  // Agrupa produtos por categoria
   const produtosPorCategoria = {};
+
   produtos.forEach(p => {
-    if (!produtosPorCategoria[p.categoria]) produtosPorCategoria[p.categoria] = [];
+    if(!produtosPorCategoria[p.categoria]) produtosPorCategoria[p.categoria] = [];
     produtosPorCategoria[p.categoria].push(p);
-    if (carrinho[p.nome] === undefined) carrinho[p.nome] = 0;
+    if(carrinho[p.nome] === undefined) carrinho[p.nome] = 0;
   });
 
   Object.keys(produtosPorCategoria).sort().forEach(cat => {
-    // Inicializa estado da categoria se necessário
-    if (categoriasAtivas[cat] === undefined) categoriasAtivas[cat] = true;
+    if(categoriasAtivas[cat] === undefined) categoriasAtivas[cat] = true;
 
-    // Cria botão da categoria
+    // Botão categoria
     const btn = document.createElement("h3");
     btn.className = "categoria-btn";
     btn.dataset.cat = cat;
-    btn.innerHTML = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
-    btn.onclick = () => toggleCategoria(cat, container, btn);
+    btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
     area.appendChild(btn);
 
-    // Container da categoria
+    // Container categoria
     const container = document.createElement("div");
     container.className = "categoria-produtos";
     container.id = "cat-" + cat;
@@ -334,11 +216,13 @@ function renderProdutos() {
     container.style.padding = categoriasAtivas[cat] ? "8px 0" : "0";
     area.appendChild(container);
 
-    // Renderiza produtos dentro da categoria
+    btn.onclick = () => toggleCategoria(cat, container, btn);
+
+    // Produtos
     produtosPorCategoria[cat].forEach(p => {
-      const produtoDiv = document.createElement("div");
-      produtoDiv.className = "produto-item";
-      produtoDiv.innerHTML = `
+      const div = document.createElement("div");
+      div.className = "produto-item";
+      div.innerHTML = `
         <div class="produto-header">${p.nome} - ${formatarMoeda(p.valor)}</div>
         <div class="produto-desc">${p.descricao || ""}</div>
         <div class="produto-footer">
@@ -349,36 +233,29 @@ function renderProdutos() {
           </div>
         </div>
       `;
-      container.appendChild(produtoDiv);
+      container.appendChild(div);
 
-      // Referências para os botões e quantidade
-      const qtdNumDiv = produtoDiv.querySelector(".qtd-num");
-      const btnMais = produtoDiv.querySelectorAll(".qtd-btn")[1];
-      const btnMenos = produtoDiv.querySelectorAll(".qtd-btn")[0];
-
-      btnMais.onclick = () => alterarQtd(p.nome, 1, qtdNumDiv);
-      btnMenos.onclick = () => alterarQtd(p.nome, -1, qtdNumDiv);
+      const qtdDiv = div.querySelector(".qtd-num");
+      const btnMais = div.querySelectorAll(".qtd-btn")[1];
+      const btnMenos = div.querySelectorAll(".qtd-btn")[0];
+      btnMais.onclick = () => alterarQtd(p.nome, 1, qtdDiv);
+      btnMenos.onclick = () => alterarQtd(p.nome, -1, qtdDiv);
     });
   });
 }
 
-// Nova versão de alterarQtd que usa referência direta da div de quantidade
-function alterarQtd(produto, delta, qtdDiv) {
-  if (carrinho[produto] === undefined) carrinho[produto] = 0;
-  carrinho[produto] += delta;
-  if (carrinho[produto] < 0) carrinho[produto] = 0;
-
-  // Atualiza a quantidade na tela
-  qtdDiv.textContent = carrinho[produto];
-
+// Alterar quantidade
+function alterarQtd(nome, delta, qtdDiv){
+  carrinho[nome] = (carrinho[nome]||0) + delta;
+  if(carrinho[nome]<0) carrinho[nome]=0;
+  qtdDiv.textContent = carrinho[nome];
   atualizarTotal();
 }
 
-// Atualização de toggleCategoria para usar maxHeight e manter estado
-function toggleCategoria(cat, container, btn) {
+// Toggle categoria
+function toggleCategoria(cat, container, btn){
   categoriasAtivas[cat] = !categoriasAtivas[cat];
-
-  if (categoriasAtivas[cat]) {
+  if(categoriasAtivas[cat]){
     container.style.maxHeight = container.scrollHeight + "px";
     container.style.padding = "8px 0";
     btn.classList.add("ativa");
@@ -387,77 +264,63 @@ function toggleCategoria(cat, container, btn) {
     container.style.padding = "0";
     btn.classList.remove("ativa");
   }
-
-  // Atualiza seta do botão
-  btn.innerHTML = `${cat} ${categoriasAtivas[cat] ? '▼' : '►'}`;
+  btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
 }
-/* ---------- SIMULAÇÃO (inalterada) ---------- */
 
-function arredondarParaCima(v){return Math.ceil(v*100)/100;}
-function formatarMoeda(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
-function limparNumero(v){return parseFloat(v.replace(/\D/g,""))/100;}
-
-document.getElementById("modoBtn").onclick=()=>{ 
-  modoSimulacao=modoSimulacao==="cartao"?"consignado":"cartao"; 
-  document.getElementById("modoBtn").textContent=modoSimulacao==="cartao"?"Card":"Plano Especial"; 
-  document.getElementById("txespecBtn").style.display=modoSimulacao==="cartao"?"block":"none"; 
-  calcularAtual(); 
-};
-
-document.getElementById("txespecBtn").onclick=()=>{
-  txEspecialAtiva=!txEspecialAtiva; 
-  document.getElementById("txespecBtn").classList.toggle("ativo"); 
-  calcularAtual(); 
-};
-
-document.getElementById("verTodas").onclick=()=>{
-  mostrarTodas=!mostrarTodas;
-  document.getElementById("verTodas").textContent=mostrarTodas?"Mostrar menos":"Ver todas parcelas";
+// Simulação
+document.getElementById("modoBtn").onclick = () => {
+  modoSimulacao = modoSimulacao==="cartao"?"consignado":"cartao";
+  document.getElementById("modoBtn").textContent = modoSimulacao==="cartao"?"Card":"Plano Especial";
+  document.getElementById("txespecBtn").style.display = modoSimulacao==="cartao"?"block":"none";
   calcularAtual();
 };
 
-input.addEventListener("input",e=>{
-  let n=limparNumero(e.target.value);
+document.getElementById("txespecBtn").onclick = () => {
+  txEspecialAtiva = !txEspecialAtiva;
+  document.getElementById("txespecBtn").classList.toggle("ativo");
+  calcularAtual();
+};
+
+document.getElementById("verTodas").onclick = () => {
+  mostrarTodas = !mostrarTodas;
+  document.getElementById("verTodas").textContent = mostrarTodas?"Mostrar menos":"Ver todas parcelas";
+  calcularAtual();
+};
+
+input.addEventListener("input", e => {
+  let n = limparNumero(e.target.value);
   input.value = n ? formatarMoeda(n) : "";
   if(n) calcular(n);
 });
 
 function calcularAtual(){
-  const v=limparNumero(input.value);
+  const v = limparNumero(input.value);
   if(v) calcular(v);
 }
 
 function calcular(valor){
-  resultadoDiv.innerHTML="";
+  resultadoDiv.innerHTML = "";
   if(modoSimulacao==="cartao"){
     for(let n=1;n<=18;n++){
-      let taxa=taxas[n]||0;
-      if(txEspecialAtiva && n<=3)taxa=0;
-      const valorCorrigido=valor/(1-taxa);
-      const parcela=arredondarParaCima(valorCorrigido/n);
-      const totalFinal=arredondarParaCima(parcela*n);
-      if(n>12&&!mostrarTodas)continue;
-      let classes="card";
-      if(n<=3)classes+=" destacada";
-      if(n>12)classes+=" opaca";
-      resultadoDiv.innerHTML+=`
-        <div class="${classes}">
-          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-        </div>`;
+      let taxa = taxas[n]||0;
+      if(txEspecialAtiva && n<=3) taxa=0;
+      const valorCorrigido = valor/(1-taxa);
+      const parcela = arredondarParaCima(valorCorrigido/n);
+      const totalFinal = arredondarParaCima(parcela*n);
+      if(n>12 && !mostrarTodas) continue;
+      let classes = "card";
+      if(n<=3) classes+=" destacada";
+      if(n>12) classes+=" opaca";
+      resultadoDiv.innerHTML += `<div class="${classes}"><div class="parcela">${n}x de ${formatarMoeda(parcela)}</div><div class="total">Total: ${formatarMoeda(totalFinal)}</div></div>`;
     }
     document.getElementById("verTodas").style.display="block";
   } else {
     document.getElementById("verTodas").style.display="none";
     Object.keys(coeficientesConsignado).sort((a,b)=>a-b).forEach(n=>{
-      const coef=coeficientesConsignado[n];
-      const parcela=arredondarParaCima(valor*coef);
-      const totalFinal=arredondarParaCima(parcela*n);
-      resultadoDiv.innerHTML+=`
-        <div class="card">
-          <div class="parcela">${n}x de ${formatarMoeda(parcela)}</div>
-          <div class="total">Total: ${formatarMoeda(totalFinal)}</div>
-        </div>`;
+      const coef = coeficientesConsignado[n];
+      const parcela = arredondarParaCima(valor*coef);
+      const totalFinal = arredondarParaCima(parcela*n);
+      resultadoDiv.innerHTML += `<div class="card"><div class="parcela">${n}x de ${formatarMoeda(parcela)}</div><div class="total">Total: ${formatarMoeda(totalFinal)}</div></div>`;
     });
   }
 }
