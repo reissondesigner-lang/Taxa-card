@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#0b1120">
 
   <style>
+    /* Estilos do seu aplicativo, sem alterações */
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
@@ -19,122 +20,33 @@
       display: flex;
       justify-content: center;
     }
-    .container {
-      width: 100%;
-      max-width: 420px;
-      padding: 28px 18px 40px 18px;
-    }
-    .app-card {
-      backdrop-filter: blur(14px);
-      background: rgba(30, 41, 59, 0.65);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      position: relative;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .clear-cache, .produtos-btn, .voltar-btn, .limpar-btn {
-      font-size: 12px;
-      cursor: pointer;
-      opacity: 0.8;
-    }
-    h1 {
-      text-align: center;
-      font-weight: 600;
-      font-size: 20px;
-      margin: 20px 0;
-    }
-    input {
-      width: 100%;
-      padding: 16px;
-      font-size: 24px;
-      border-radius: 14px;
-      border: none;
-      background: rgba(15, 23, 42, 0.9);
-      color: white;
-      text-align: center;
-      outline: none;
-      margin-bottom: 12px;
-    }
-    .button-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .toggle-btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 14px;
-      border: none;
-      font-size: 13px;
-      background: rgba(51,65,85,0.8);
-      color: #cbd5e1;
-      cursor: pointer;
-    }
-    .toggle-btn.ativo {
-      background: linear-gradient(90deg, #16a34a, #22c55e);
-      color: white;
-    }
-    .card {
-      background: rgba(15, 23, 42, 0.95);
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 10px;
-    }
-    .card.destacada {
-      border: 1px solid #3990C9;
-      box-shadow: 0 0 10px #225678;
-    }
+    .container { width: 100%; max-width: 420px; padding: 28px 18px 40px 18px; }
+    .app-card { backdrop-filter: blur(14px); background: rgba(30, 41, 59, 0.65); border-radius: 20px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; }
+    .clear-cache, .produtos-btn, .voltar-btn, .limpar-btn { font-size: 12px; cursor: pointer; opacity: 0.8; }
+    h1 { text-align: center; font-weight: 600; font-size: 20px; margin: 20px 0; }
+    input { width: 100%; padding: 16px; font-size: 24px; border-radius: 14px; border: none; background: rgba(15, 23, 42, 0.9); color: white; text-align: center; outline: none; margin-bottom: 12px; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; }
+    .toggle-btn { flex: 1; padding: 12px; border-radius: 14px; border: none; font-size: 13px; background: rgba(51,65,85,0.8); color: #cbd5e1; cursor: pointer; }
+    .toggle-btn.ativo { background: linear-gradient(90deg, #16a34a, #22c55e); color: white; }
+    .card { background: rgba(15, 23, 42, 0.95); padding: 14px; border-radius: 14px; margin-bottom: 10px; }
+    .card.destacada { border: 1px solid #3990C9; box-shadow: 0 0 10px #225678; }
     .card.opaca { opacity: 0.45; }
     .parcela { font-size: 17px; font-weight: 600; }
     .total { font-size: 11px; opacity: 0.7; }
-    .ver-todas {
-      text-align: center;
-      font-size: 12px;
-      cursor: pointer;
-      opacity: 0.7;
-      margin: 10px 0;
-    }
+    .ver-todas { text-align: center; font-size: 12px; cursor: pointer; opacity: 0.7; margin: 10px 0; }
     .tela { display: none; }
     .tela.ativa { display: block; }
-    .produto-item {
-      background: rgba(15,23,42,0.95);
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
+    .produto-item { background: rgba(15,23,42,0.95); padding: 12px; border-radius: 12px; margin-bottom: 10px; }
     .produto-header { font-size: 14px; font-weight: 600; }
     .produto-desc { font-size: 11px; opacity: 0.6; margin: 4px 0 8px 0; }
     .produto-footer { display: flex; justify-content: space-between; align-items: center; }
     .qtd-controls { display: flex; align-items: center; gap: 8px; }
     .qtd-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: #1e293b; color: white; cursor: pointer; }
     .qtd-num { min-width: 18px; text-align: center; font-size: 13px; }
-    .categoria-btn {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background: #16a34a;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.3s;
-    }
+    .categoria-btn { width: 100%; padding: 10px; margin: 10px 0; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
     .categoria-btn:hover { background: #22c55e; }
-    .categoria-produtos {
-      overflow: hidden;
-      max-height: 0;
-      padding: 0;
-      transition: max-height 0.4s ease, padding 0.4s ease;
-    }
+    .categoria-produtos { overflow: hidden; max-height: 0; padding: 0; transition: max-height 0.4s ease, padding 0.4s ease; }
     .categoria-btn .seta { transition: transform 0.4s ease; }
     .categoria-btn.ativa .seta { transform: rotate(90deg); }
   </style>
@@ -192,6 +104,21 @@ const telaProdutos = document.getElementById("telaProdutos");
 const input = document.getElementById("valor");
 const resultadoDiv = document.getElementById("resultado");
 
+// FUNÇÃO PARA TOGGLE DE CATEGORIA
+function toggleCategoria(cat, container, btn) {
+  categoriasAtivas[cat] = !categoriasAtivas[cat];
+  if (categoriasAtivas[cat]) {
+    container.style.maxHeight = container.scrollHeight + "px";
+    container.style.padding = "8px 0";
+    btn.classList.add("ativa");
+  } else {
+    container.style.maxHeight = "0px";
+    container.style.padding = "0";
+    btn.classList.remove("ativa");
+  }
+  btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
+}
+
 // ABRIR PRODUTOS
 document.getElementById("abrirProdutos").onclick = () => {
   telaSimulador.classList.remove("ativa");
@@ -213,19 +140,19 @@ document.getElementById("limparCarrinho").onclick = () => {
 };
 
 // FUNÇÃO PARA ALTERAR QUANTIDADE
-function alterarQtd(produto, delta, qtdDiv){
-  if(carrinho[produto] === undefined) carrinho[produto] = 0;
+function alterarQtd(produto, delta, qtdDiv) {
+  if (carrinho[produto] === undefined) carrinho[produto] = 0;
   carrinho[produto] += delta;
-  if(carrinho[produto] < 0) carrinho[produto] = 0;
+  if (carrinho[produto] < 0) carrinho[produto] = 0;
   qtdDiv.textContent = carrinho[produto];
   atualizarTotal();
 }
 
 // FUNÇÃO ATUALIZAR TOTAL
-function atualizarTotal(){
+function atualizarTotal() {
   let total = 0;
   produtos.forEach(p => total += p.valor * (carrinho[p.nome] || 0));
-  if(total > 0){
+  if (total > 0) {
     input.value = formatarMoeda(total);
     calcular(total);
   } else {
@@ -233,23 +160,9 @@ function atualizarTotal(){
     resultadoDiv.innerHTML = "";
   }
 }
-// FUNÇÃO PARA TOGGLE DE CATEGORIA
-function toggleCategoria(cat, container, btn){
-  categoriasAtivas[cat] = !categoriasAtivas[cat];
-  if(categoriasAtivas[cat]){
-    container.style.maxHeight = container.scrollHeight + "px";
-    container.style.padding = "8px 0";
-    btn.classList.add("ativa");
-  } else {
-    container.style.maxHeight = "0px";
-    container.style.padding = "0";
-    btn.classList.remove("ativa");
-  }
-  btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
-}
 
 // FUNÇÃO PARA RENDERIZAR PRODUTOS
-function renderProdutos(){
+function renderProdutos() {
   const area = document.getElementById("produtosArea");
   area.innerHTML = "";
   const produtosPorCategoria = {};
