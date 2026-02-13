@@ -106,7 +106,15 @@ const resultadoDiv = document.getElementById("resultado");
 
 // FUNÇÃO PARA TOGGLE DE CATEGORIA
 function toggleCategoria(cat, container, btn) {
-  categoriasAtivas[cat] = !categoriasAtivas[cat];
+  if (!categoriasAtivas[cat]) {
+    // Marca a categoria como aberta apenas quando clicada pela primeira vez
+    categoriasAtivas[cat] = true;
+    
+    // Renderiza os produtos
+    renderProdutos();
+  }
+
+  // Ação para abrir ou fechar a categoria
   if (categoriasAtivas[cat]) {
     container.style.maxHeight = container.scrollHeight + "px";
     container.style.padding = "8px 0";
@@ -118,6 +126,7 @@ function toggleCategoria(cat, container, btn) {
   }
   btn.textContent = `${cat} ${categoriasAtivas[cat] ? "▼" : "►"}`;
 }
+
 
 // ABRIR PRODUTOS
 document.getElementById("abrirProdutos").onclick = () => {
